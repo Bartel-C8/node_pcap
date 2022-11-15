@@ -1,6 +1,6 @@
 {
-  "name": "pcap",
-  "version": "3.1.0",
+  "name": "@plus100kt/pcap",
+  "version": "0.0.1",
   "description": "raw packet capture, decoding, and analysis",
   "author": "Matt Ranney <mjr@ranney.com>",
   "license": "MIT",
@@ -11,24 +11,24 @@
   "types": "pcap.d.ts",
   "repository": {
     "type": "git",
-    "url": "git://github.com/node-pcap/node_pcap.git"
+    "url": "git://github.com/plus100kt/node_pcap.git"
   },
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
     "@types/node": "^10.0.0",
-    "nan": "^2.14.0"
+    "nan": "^2.17.0"
   },
   "devDependencies": {
     "grunt": "^1.0.4",
     "grunt-cli": "^1.3.2",
-    "grunt-contrib-jshint": "^2.1.0",
+    "grunt-contrib-jshint": "^3.2.0",
     "grunt-coveralls": "^2.0.0",
     "grunt-mocha-istanbul": "^5.0.2",
     "grunt-mocha-test": "^0.12.7",
     "istanbul": "^0.4.5",
-    "mocha": "^7.0.1",
+    "mocha": "^10.1.0",
     "mocha-sinon": "^1.1.4",
     "should": "^5.0.0",
     "sinon": "^1.14.1"
