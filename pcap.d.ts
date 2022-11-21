@@ -191,3 +191,92 @@ export const lib_version: string;
  * to handle warnings in a different way.
  */
 export let warningHandler: (text: string) => any;
+
+export interface PcapPacket {
+    link_type: LinkType;
+    pcap_header: PcapHeader;
+    payload: EthernetPacket | NullPacket | IPv4 | RadioPacket | SLLPacket;
+    emitter: any;
+}
+
+// raw_header.readUInt32LE(0, true);
+interface PcapHeader {
+    tv_sec: number;
+    tv_usec: number;
+    caplen: number;
+    len: number;
+}
+
+// LINKTYPE_ETHERNET
+interface EthernetPacket {
+    emitter: any;
+    dhost: EthernetAddr;
+    shost: EthernetAddr;
+    ethertype: number;
+    vlan: any;
+    payload: IPv4;
+}
+interface EthernetAddr {
+    addr: any[];
+}
+
+// LINKTYPE_RAW
+interface IPv4 {
+    emitter: any;
+    version: number;
+    headerLength: number;
+    diffserv: number;
+    length: number;
+    identification: number;
+    flags: any[];
+    fragmentOffset: number;
+    ttl: number;
+    protocol: PcapProtocolDecimal;
+    headerChecksum: number;
+    saddr: any[];
+    daddr: any[];
+    protocolName: PcapProtocolName;
+    payload: any[];
+}
+
+// 잘 안쓰일것 같은 패킷 타입 간단하게 인터페이스화
+// LINKTYPE_NULL
+interface NullPacket {
+    emitter: any;
+    pftype: any;
+    payload: any;
+    _error: any;
+}
+
+// LINKTYPE_IEEE802_11_RADIO
+interface RadioPacket {
+    emitter: any;
+    headerRevision: any;
+    headerPad: any;
+    headerLength: any;
+    presentFields: any;
+    fields: any;
+    _decoderCache: any;
+}
+
+// LINKTYPE_LINUX_SLL
+interface SLLPacket {
+    emitter: any;
+    packet_type: any;
+    address_type: any;
+    address_len: any;
+    address: any;
+    ethertype: any;
+    payload: any;
+}
+
+// https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
+export type PcapProtocolDecimal =
+    | 1   // icmp
+    | 2   // igmp
+    | 4   // ipv4
+    | 6   // tcp
+    | 17  // udp
+    | 41; // ipv6
+  
+export type PcapProtocolName = 'icmp' | 'igmp' | 'ipv4' | 'tcp' | 'udp' | 'ipv6';
