@@ -31,7 +31,7 @@ UDP.prototype.eventsOnDecode = true;
 
 UDP.prototype.toString = function () {
     var ret = "UDP " + this.sport + "->" + this.dport + " len " + this.length;
-    if (this.sport === 53 || this.dport === 53) {
+    if (Number(this.sport) === 53 || Number(this.dport) === 53) {
         ret += (new DNS().decode(this.data, 0, this.data.length).toString());
     }
     return ret;
