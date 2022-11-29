@@ -205,7 +205,7 @@ export let warningHandler: (text: string) => any;
 export interface PcapPacket {
     link_type: LinkType;
     pcap_header: PcapHeader;
-    payload: EthernetPacket | NullPacket | IPv4 | RadioPacket | SLLPacket;
+    payload: EthernetPacket & NullPacket & IPv4 & RadioPacket & SLLPacket;
     emitter: any;
 }
 
@@ -230,7 +230,7 @@ type Arp = any;
 type IPv6 = any;
 
 interface EthernetAddr {
-    addr: any[];
+    addr: number[];
 }
 
 // LINKTYPE_RAW
@@ -241,13 +241,13 @@ interface IPv4 {
     diffserv: number;
     length: number;
     identification: number;
-    flags: IPFlags[];
+    flags: IPFlags;
     fragmentOffset: number;
     ttl: number;
     protocol: PcapProtocolDecimal;
     headerChecksum: number;
-    saddr: IPv4Addr[];
-    daddr: IPv4Addr[];
+    saddr: IPv4Addr;
+    daddr: IPv4Addr;
     protocolName: PcapProtocolName;
     payload: TCP;
 }
@@ -307,11 +307,11 @@ export interface TCP {
     ackno: number;
     headerLength: number;
     reserved: any;
-    flags: TCPFlags[];
+    flags: TCPFlags;
     windowSize: number;
     checksum: number;
     urgentPointer: number;
-    options: TCPOptions[];
+    options: TCPOptions;
     data: Buffer;
     dataLength: number;
 }
