@@ -4,14 +4,19 @@ import { EventEmitter } from 'events';
 // FIXME: write rest of the typings
 export const decode: any;
 export const TCPTracker: any;
-export const TCPSession: any;
+export const TCPSession: TCPSessionType & any;
 export const DNSCache: any;
 
 /**
  * format of the link-layer headers; `LINKTYPE_<...>` string, see
  * [this list](https://www.tcpdump.org/linktypes.html).
  */
-export type LinkType = 'LINKTYPE_NULL' | 'LINKTYPE_ETHERNET' | 'LINKTYPE_IEEE802_11_RADIO' | 'LINKTYPE_RAW' | 'LINKTYPE_LINUX_SLL';
+export type LinkType =
+    | 'LINKTYPE_NULL'
+    | 'LINKTYPE_ETHERNET'
+    | 'LINKTYPE_IEEE802_11_RADIO'
+    | 'LINKTYPE_RAW'
+    | 'LINKTYPE_LINUX_SLL';
 
 export interface CaptureStats {
     /** number of packets received */
@@ -40,22 +45,22 @@ export declare class PcapSession extends EventEmitter {
 
     /**
      * Get current capture statistics
-     * 
+     *
      * The statistics do not behave the same way on all platforms.
      * `ps_recv` might count packets whether they passed the filter or not,
      * or it might count only packets that pass the filter. It also might,
      * or might not, count packets dropped because there was no room in the
      * operating system's buffer when they arrived.
-     * 
+     *
      * `ps_drop` is not available on all platforms; it is zero on platforms
      * where it's not available. If packet filtering is done in libpcap,
      * rather than in the operating system, it would count packets that
      * don't pass the filter.
-     * 
+     *
      * Both `ps_recv` and `ps_drop` might, or might not,
      * count packets not yet read from the operating system and thus not
      * yet seen by the application.
-     * 
+     *
      * `ps_ifdrop` might, or might not, be
      * implemented; if it's zero, that might mean that no packets were dropped
      * by the interface, or it might mean that the statistic is unavailable,
@@ -88,7 +93,7 @@ export interface CommonSessionOptions {
 export interface LiveSessionOptions extends CommonSessionOptions {
     /**
      * size of the ringbuffer where packets are stored until delivered to your code, in bytes (default: 10MB)
-     * 
+     *
      * > Packets that arrive for a capture are stored in a buffer, so that they do not have to be read by the application as soon as they arrive. On some platforms, the buffer's size can be set; a size that's too small could mean that, if too many packets are being captured and the snapshot length doesn't limit the amount of data that's buffered, packets could be dropped if the buffer fills up before the application can read packets from it, while a size that's too large could use more non-pageable operating system memory than is necessary to prevent packets from being dropped.
      */
     buffer_size?: number;
@@ -97,11 +102,11 @@ export interface LiveSessionOptions extends CommonSessionOptions {
      * specifies if the interface is opened in promiscuous mode (default: true)
      *
      * > On broadcast LANs such as Ethernet, if the network isn't switched, or if the adapter is connected to a "mirror port" on a switch to which all packets passing through the switch are sent, a network adapter receives all packets on the LAN, including unicast or multicast packets not sent to a network address that the network adapter isn't configured to recognize.
-     * > 
+     * >
      * > Normally, the adapter will discard those packets; however, many network adapters support "promiscuous mode", which is a mode in which all packets, even if they are not sent to an address that the adapter recognizes, are provided to the host. This is useful for passively capturing traffic between two or more other hosts for analysis.
-     * > 
+     * >
      * > Note that even if an application does not set promiscuous mode, the adapter could well be in promiscuous mode for some other reason.
-     * > 
+     * >
      * > For now, this doesn't work on the "any" device; if an argument of "any" or NULL is supplied, the setting of promiscuous mode is ignored.
      */
     promiscuous?: boolean;
@@ -122,8 +127,8 @@ export interface LiveSessionOptions extends CommonSessionOptions {
      * If set to zero or negative, then instead immediate mode is enabled:
      *
      * > In immediate mode, packets are always delivered as soon as they arrive, with no buffering.
-     */    
-    buffer_timeout?: number
+     */
+    buffer_timeout?: number;
 
     /**
      * specifies if monitor mode is enabled (default: false)
@@ -134,7 +139,7 @@ export interface LiveSessionOptions extends CommonSessionOptions {
      * >
      * > Note that in monitor mode the adapter might disassociate from the network with which it's associated, so that you will not be able to use any wireless networks with that adapter. This could prevent accessing files on a network server, or resolving host names or network addresses, if you are capturing in monitor mode and are not connected to another network with another adapter.
      */
-    monitor?: boolean
+    monitor?: boolean;
 
     /**
      * snapshot length in bytes (default: 65535)
@@ -143,29 +148,34 @@ export interface LiveSessionOptions extends CommonSessionOptions {
      * >
      * > A snapshot length of 65535 should be sufficient, on most if not all networks, to capture all the data available from the packet.
      */
-    snap_length?: number
+    snap_length?: number;
 }
 
-export interface OfflineSessionOptions extends CommonSessionOptions {
-}
+export interface OfflineSessionOptions extends CommonSessionOptions {}
 
 /**
  * Creates a live capture session on the specified device,
  * and starts capturing packets.
- * 
+ *
  * @param device name of the interface to capture on
  * @param options capture options
  */
-export declare function createSession(device: string, options?: LiveSessionOptions): PcapSession;
+export declare function createSession(
+    device: string,
+    options?: LiveSessionOptions
+): PcapSession;
 
 /**
  * Starts an 'offline' capture session that emits packets
  * read from a capture file.
- * 
+ *
  * @param path filename of the `.pcap` file to read
  * @param options capture options
  */
-export declare function createOfflineSession(path: string, options?: OfflineSessionOptions): PcapSession;
+export declare function createOfflineSession(
+    path: string,
+    options?: OfflineSessionOptions
+): PcapSession;
 
 export interface Address {
     addr: string;
@@ -199,7 +209,6 @@ export interface PcapPacket {
     emitter: any;
 }
 
-// raw_header.readUInt32LE(0, true);
 interface PcapHeader {
     tv_sec: number;
     tv_usec: number;
@@ -214,8 +223,12 @@ interface EthernetPacket {
     shost: EthernetAddr;
     ethertype: number;
     vlan: any;
-    payload: IPv4;
+    payload: IPv4 | Arp | IPv6;
 }
+
+type Arp = any;
+type IPv6 = any;
+
 interface EthernetAddr {
     addr: any[];
 }
@@ -228,18 +241,17 @@ interface IPv4 {
     diffserv: number;
     length: number;
     identification: number;
-    flags: any[];
+    flags: IPFlags[];
     fragmentOffset: number;
     ttl: number;
     protocol: PcapProtocolDecimal;
     headerChecksum: number;
-    saddr: any[];
-    daddr: any[];
+    saddr: IPv4Addr[];
+    daddr: IPv4Addr[];
     protocolName: PcapProtocolName;
-    payload: any[];
+    payload: TCP;
 }
 
-// 잘 안쓰일것 같은 패킷 타입 간단하게 인터페이스화
 // LINKTYPE_NULL
 interface NullPacket {
     emitter: any;
@@ -272,11 +284,102 @@ interface SLLPacket {
 
 // https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
 export type PcapProtocolDecimal =
-    | 1   // icmp
-    | 2   // igmp
-    | 4   // ipv4
-    | 6   // tcp
-    | 17  // udp
+    | 1 // icmp
+    | 2 // igmp
+    | 4 // ipv4
+    | 6 // tcp
+    | 17 // udp
     | 41; // ipv6
-  
-export type PcapProtocolName = 'icmp' | 'igmp' | 'ipv4' | 'tcp' | 'udp' | 'ipv6';
+
+export type PcapProtocolName =
+    | 'icmp'
+    | 'igmp'
+    | 'ipv4'
+    | 'tcp'
+    | 'udp'
+    | 'ipv6';
+
+export interface TCP {
+    emitter: any;
+    sport: number;
+    dport: number;
+    seqno: number;
+    ackno: number;
+    headerLength: number;
+    reserved: any;
+    flags: TCPFlags[];
+    windowSize: number;
+    checksum: number;
+    urgentPointer: number;
+    options: TCPOptions[];
+    data: Buffer;
+    dataLength: number;
+}
+
+export interface IPFlags {
+    emitter: any;
+    reserved: boolean;
+    doNotFragment: boolean;
+    moreFragments: boolean;
+}
+
+export interface TCPFlags {
+    emitter: any;
+    nonce: boolean;
+    cwr: boolean;
+    ece: boolean;
+    urg: boolean;
+    ack: boolean;
+    psh: boolean;
+    rst: boolean;
+    syn: boolean;
+    fin: boolean;
+}
+
+export interface TCPOptions {
+    mss: any;
+    window_scale: any;
+    sack_ok: any;
+    sack: any;
+    timestamp: number;
+    echo: number;
+}
+
+export interface IPv4Addr {
+    addr: number[];
+}
+
+export interface TCPSessionType {
+    src: string;
+    src_name: string;
+    dst: string;
+    dst_name: string;
+    state: string;
+    current_cap_time: number;
+    syn_time: number;
+    missed_syn: boolean;
+    connect_time: number;
+    send_isn: number;
+    send_window_scale: number;
+    send_packets: any;
+    send_acks: any;
+    send_retrans: any;
+    send_next_seq: number;
+    send_acked_seq: any;
+    send_bytes_ip: number;
+    send_bytes_tcp: number;
+    send_bytes_payload: number;
+    recv_isn: any;
+    recv_window_scale: any;
+    recv_packets: any;
+    recv_acks: any;
+    recv_retrans: any;
+    recv_next_seq: any;
+    recv_acked_seq: any;
+    recv_bytes_ip: number;
+    recv_bytes_tcp: number;
+    recv_bytes_payload: number;
+    _events: any;
+    _eventsCount: number;
+    _maxListeners: any;
+}
