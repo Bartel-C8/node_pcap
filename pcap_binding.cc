@@ -147,5 +147,9 @@ void Initialize(Local<Object> exports)
 }
 
 DISABLE_WCAST_FUNCTION_TYPE
-NODE_MODULE(pcap_binding, Initialize)
+#if NODE_MAJOR_VERSION >= 10
+  NAN_MODULE_WORKER_ENABLED(pcap_binding, Initialize)
+#else
+  NODE_MODULE(pcap_binding, Initialize)
+#endif
 DISABLE_WCAST_FUNCTION_TYPE_END

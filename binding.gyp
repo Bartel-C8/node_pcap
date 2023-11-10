@@ -6,11 +6,15 @@
       "include_dirs": [
         "<!(node -e \"require('nan')\")"
       ],
-      "link_settings": {
-          "libraries": [
+      "conditions": [
+        ['OS == "mac"', {
+          "link_settings": {
+            "libraries": [
               "-lpcap"
-          ]
-      }
+            ]
+          }
+        }]
+      ]
     }
   ]
 }
