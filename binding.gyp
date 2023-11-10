@@ -8,6 +8,14 @@
       ],
       "conditions": [
         ['OS == "mac"', {
+          "xcode_settings": {
+            "MACOSX_DEPLOYMENT_TARGET": "10.10",
+            "OTHER_CFLAGS": [
+              "-Wall",
+              "-Werror",
+              "-Wno-deprecated-declarations"
+            ]
+          },
           "link_settings": {
             "libraries": [
               "-lpcap"

@@ -1,6 +1,6 @@
 {
-  "name": "@plus100kt/pcap",
-  "version": "0.0.4",
+  "name": "@constell8/pcap",
+  "version": "0.0.5",
   "description": "raw packet capture, decoding, and analysis",
   "author": "Matt Ranney <mjr@ranney.com>",
   "license": "MIT",
@@ -11,7 +11,7 @@
   "types": "pcap.d.ts",
   "repository": {
     "type": "git",
-    "url": "git://github.com/plus100kt/node_pcap.git"
+    "url": "git://github.com/Bartel-C8/node_pcap.git"
   },
   "os": [
     "darwin"
