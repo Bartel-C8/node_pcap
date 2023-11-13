@@ -1,6 +1,6 @@
 {
   "name": "@constell8/pcap",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "raw packet capture, decoding, and analysis",
   "author": "Matt Ranney <mjr@ranney.com>",
   "license": "MIT",
@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "@types/node": "^18.18.9",
-    "nan": "^2.18.0"
+    "nan": "^2.18.0",
+    "node-gyp": "^10.0.1"
   },
   "devDependencies": {
     "grunt": "^1.6.1",
